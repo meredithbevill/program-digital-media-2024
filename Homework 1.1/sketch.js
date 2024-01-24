@@ -1,5 +1,5 @@
 function setup() {
-  createCanvas(400, 400);
+  createCanvas(300, 175); 
 }
 
 function draw() {
@@ -7,9 +7,9 @@ function draw() {
 
   fill(255); // Set fill color to white
 
-  // Draw a circle on the left
-  ellipse(100, height / 2, 50, 50);
+  // Draw a circle 
+  ellipse(75, height / 2, 130, 130);
 
-  // Draw a square on the right
-  rect(width - 150, height / 2 - 25, 50, 50);
+  // Draw a square 
+  rect(160, height / 2 - 65 , 130, 130);
 }
