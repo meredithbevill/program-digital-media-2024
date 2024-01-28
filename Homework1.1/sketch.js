@@ -11,8 +11,8 @@ var ex1 = function( p ) {
   };
 
   p.draw = function() {
-    p.background(0, 255, 0); // Set background color to green
-    p.fill(255); // Set fill color to white
+    p.background(0, 255, 0); 
+    p.fill(255);
 
     // Draw a circle
     p.ellipse(x1, y1, 130, 130);
@@ -22,7 +22,9 @@ var ex1 = function( p ) {
   };
 };
 
+//p5 instance
 var myp5 = new p5(ex1, 'c1');
+
 
 // Example 2
 var ex2 = function( p ) { 
@@ -35,7 +37,7 @@ var ex2 = function( p ) {
   };
 
   p.draw = function() {
-    p.background(255); // Set background color to white
+    p.background(255); 
 
     // Draw red circle on top
     p.fill(255, 0, 0, 100);
@@ -64,10 +66,10 @@ var ex3 = function( p ) {
   };
 
   p.draw = function() {
-    p.background(0); // Set background color to black
+    p.background(0); 
     p.angleMode(p.DEGREES);
     
-    // Draw yellow circle with triangle cut out
+    // Draw yellow circle with cut out
     p.fill(255, 255, 0); // Yellow
     p.arc(100, 100, 100, 100, 30, 330, p.PIE);
 
@@ -90,11 +92,9 @@ var myp5 = new p5(ex3, 'c3');
 
 // Example 4
 var ex4 = function(p) {
-  // Center of the canvas
   var centerX;
   var centerY;
 
-  // Setup function
   p.setup = function() {
     p.createCanvas(250, 250);
     centerX = p.width / 2;
@@ -103,17 +103,17 @@ var ex4 = function(p) {
 
   // Draw function
   p.draw = function() {
-    // Set background color to dark blue
+
     p.background(0, 0, 100);
 
     // Set stroke color to white
     p.stroke(255);
 
-    // Set fill color to green and draw a centered circle
+    // Set fill color to green and draw a circle
     p.fill(0, 100, 0);
     p.ellipse(centerX, centerY, 130, 130);
 
-    // Set fill color to red and draw a centered star with a larger size
+    // Set fill color to red and draw a star
     p.fill(255, 0, 0);
     drawStar(centerX, centerY, 25, 75, 5);
   };
@@ -139,5 +139,5 @@ var ex4 = function(p) {
   }
 };
 
-// Create a new p5 instance
+
 var myp5 = new p5(ex4, 'c4');
