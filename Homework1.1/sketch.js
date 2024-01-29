@@ -61,8 +61,9 @@ var myp5 = new p5(ex2, 'c2');
 
 // Example 3
 var ex3 = function( p ) {
+  
   p.setup = function() {
-    p.createCanvas(300, 175);
+  p.createCanvas(300, 175);
   };
 
   p.draw = function() {
@@ -101,7 +102,7 @@ var ex4 = function(p) {
     centerY = p.height / 2;
   };
 
-  // Draw function
+  
   p.draw = function() {
 
     p.background(0, 0, 100);
@@ -119,8 +120,8 @@ var ex4 = function(p) {
   };
 
   // Function to draw a star
-  function drawStar(x, y, radius1, radius2, npoints) {
-    var angle = p.TWO_PI / npoints;
+  function drawStar(x, y, radius1, radius2, points) {
+    var angle = p.TWO_PI / points;
     var halfAngle = angle / 2.0;
 
     // Adjust the starting angle to make the star stand upright
