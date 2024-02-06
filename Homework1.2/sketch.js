@@ -10,7 +10,7 @@ function setup() {
 
 function draw() {
   // check if mouse is pressed within boundaries
-  if (mouseIsPressed && mouseX < width && mouseY < height) {
+  if (mouseIsPressed && mouseX < width && mouseY < height && mouseX > 65) {
     strokeWeight(5);
     stroke(currentColor);
     line(pmouseX, pmouseY, mouseX, mouseY);
