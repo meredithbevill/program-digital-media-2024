@@ -64,19 +64,22 @@ let characters = [];
 // Load sprite sheets
 let spriteSheet1;
 let spriteSheet2;
+let spriteSheet3;
 
 function preload() {
   spriteSheet1 = loadImage('limeSpriteSheet.png');
   spriteSheet2 = loadImage('purpleSpriteSheet.png');
+  spriteSheet3 = loadImage('blueSpriteSheet.png');
 }
 
 function setup() {
-  createCanvas(800, 400);
+  createCanvas(1300, 650);
 
   // Create character instances
   for (let i = 0; i < 3; i++) {
     characters.push(new Character(spriteSheet1, random(width), random(height)));
     characters.push(new Character(spriteSheet2, random(width), random(height)));
+    characters.push(new Character(spriteSheet3, random(width), random(height)));
   }
 }
 
