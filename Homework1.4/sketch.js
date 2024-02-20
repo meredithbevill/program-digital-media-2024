@@ -2,14 +2,10 @@ let bugs = [];
 let squishedBugs = 0;
 let timer = 30;
 let gameStarted = false;
-let bugSpritesheet, squishedBugImage;
-let bugFrames = [];
-let currentFrame = 0;
-let frameDelay = 6;
-let frameCount = 0;
+let bugImage, squishedBugImage;
 
 function preload() {
-  bugSpritesheet = loadImage('bugspritesheet.png');
+  bugImage = loadImage('bug.png');
   squishedBugImage = loadImage('bugsquished.png');
 }
 
@@ -17,14 +13,6 @@ function setup() {
   createCanvas(1000, 600);
   for (let i = 0; i < 10; i++) {
     bugs.push(new Bug());
-  }
-  
-  // Split the sprite sheet into individual frames
-  for (let y = 0; y < bugSpritesheet.height; y += 4) {
-    for (let x = 0; x < bugSpritesheet.width; x += 4) {
-      let frame = bugSpritesheet.get(x, y, 4, 4);
-      bugFrames.push(frame);
-    }
   }
 }
 
@@ -56,9 +44,7 @@ function draw() {
     noLoop();
   }
   
-  // Animate bugs and display
   for (let bug of bugs) {
-    bug.animate();
     bug.move();
     bug.display();
   }
@@ -85,9 +71,8 @@ class Bug {
     this.x = random(width);
     this.y = random(height);
     this.speed = random(1, 3);
-    this.diameter = 4; // Width and height of each frame
-    this.frameIndex = 0; // Current frame index
-    this.image = bugFrames[0]; // Set initial frame
+    this.diameter = random(20, 40);
+    this.image = bugImage;
     this.xSpeed = random(-this.speed, this.speed);
     this.ySpeed = random(-this.speed, this.speed);
   }
@@ -107,16 +92,6 @@ class Bug {
   updateSpeed() {
     // Increase speed to make the game harder
     this.speed += 0.01;
-  }
-  
-  animate() {
-    // Animate bug walking
-    frameCount++;
-    if (frameCount >= frameDelay) {
-      this.frameIndex = (this.frameIndex + 1) % bugFrames.length;
-      this.image = bugFrames[this.frameIndex];
-      frameCount = 0;
-    }
   }
   
   display() {
