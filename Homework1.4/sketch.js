@@ -1,105 +1,107 @@
 let bugs = [];
 let squishedBugs = 0;
 let timer = 30;
-let gameStarted = false;
-let bugImage, squishedBugImage;
-
-function preload() {
-  bugImage = loadImage('bug.png');
-  squishedBugImage = loadImage('bugsquished.png');
-}
+let gameOver = false;
 
 function setup() {
-  createCanvas(1000, 600);
-  for (let i = 0; i < 10; i++) {
+  createCanvas(600, 400);
+  for (let i = 0; i < 5; i++) {
     bugs.push(new Bug());
   }
+  setInterval(() => {
+    if (!gameOver) timer--;
+  }, 1000);
 }
 
 function draw() {
   background(220);
   
-  if (!gameStarted) {
-    textAlign(CENTER);
-    textSize(32);
-    text("Click to start", width/2, height/2);
-    return;
-  }
-  
-  if (timer > 0) {
-    textAlign(RIGHT);
-    textSize(24);
-    text("Time: " + timer.toFixed(0), width - 20, 30);
-    text("Squished: " + squishedBugs, width - 20, 60);
-    timer -= 0.02;
-    
-    // Increase difficulty by making bugs move faster over time
-    for (let bug of bugs) {
-      bug.updateSpeed();
+  for (let i = bugs.length - 1; i >= 0; i--) {
+    bugs[i].update();
+    bugs[i].display();
+    if (bugs[i].offScreen()) {
+      bugs.splice(i, 1);
+      bugs.push(new Bug());
     }
-  } else {
-    textAlign(CENTER);
-    textSize(32);
-    text("Game over! Squished: " + squishedBugs, width/2, height/2);
-    noLoop();
   }
   
-  for (let bug of bugs) {
-    bug.move();
-    bug.display();
+  textSize(20);
+  textAlign(RIGHT, TOP);
+  fill(0);
+  text("Squished: " + squishedBugs, width - 10, 10);
+  text("Time: " + timer, width - 10, 40);
+  
+  if (timer <= 0) {
+    gameOver = true;
+    textSize(50);
+    textAlign(CENTER, CENTER);
+    fill(255, 0, 0);
+    text("Game Over", width / 2, height / 2);
+    noLoop();
   }
 }
 
 function mousePressed() {
-  if (gameStarted) {
-    // Check if the mouse is pressed directly on a bug to squish it
+  if (!gameOver) {
     for (let i = bugs.length - 1; i >= 0; i--) {
       if (bugs[i].contains(mouseX, mouseY)) {
+        bugs[i].squish();
         squishedBugs++;
-        bugs.splice(i, 1);
-        bugs.push(new Bug());
-        break;
       }
     }
-  } else {
-    gameStarted = true;
   }
 }
 
 class Bug {
   constructor() {
-    this.x = random(width);
-    this.y = random(height);
-    this.speed = random(1, 3);
-    this.diameter = random(20, 40);
-    this.image = bugImage;
-    this.xSpeed = random(-this.speed, this.speed);
-    this.ySpeed = random(-this.speed, this.speed);
+    this.respawn();
   }
   
-  move() {
-    this.x += this.xSpeed;
-    this.y += this.ySpeed;
-    
-    if (this.x < 0 || this.x > width) {
-      this.xSpeed *= -1;
-    }
-    if (this.y < 0 || this.y > height) {
-      this.ySpeed *= -1;
-    }
+  respawn() {
+    this.x = random(width);
+    this.y = random(height);
+    this.diameter = random(20, 40);
+    this.speedX = random(-3, 3);
+    this.speedY = random(-3, 3);
+    this.color = color(random(255), random(255), random(255));
+    this.dead = false;
   }
-
-  updateSpeed() {
-    // Increase speed to make the game harder
-    this.speed += 0.01;
+  
+  update() {
+    if (!this.dead) {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      if (this.x < 0 || this.x > width) this.speedX *= -1;
+      if (this.y < 0 || this.y > height) this.speedY *= -1;
+    }
   }
   
   display() {
-    image(this.image, this.x, this.y, this.diameter, this.diameter);
+    if (!this.dead) {
+      fill(this.color);
+      ellipse(this.x, this.y, this.diameter);
+    } else {
+      fill(100);
+      ellipse(this.x, this.y, this.diameter);
+      fill(255, 0, 0);
+      ellipse(this.x, this.y, this.diameter * 0.7); // Display dead bug
+    }
   }
   
-  contains(px, py) {
-    // Check if the point is within the bug's bounding box
-    return px > this.x && px < this.x + this.diameter && py > this.y && py < this.y + this.diameter;
+  offScreen() {
+    return (this.x < 0 || this.x > width || this.y < 0 || this.y > height);
+  }
+  
+  contains(x, y) {
+    if (this.dead) return false;
+    let d = dist(x, y, this.x, this.y);
+    return (d < this.diameter / 2);
+  }
+  
+  squish() {
+    this.dead = true;
+    setTimeout(() => {
+      this.respawn();
+    }, 1000); // Respawn after 1 second
   }
 }
