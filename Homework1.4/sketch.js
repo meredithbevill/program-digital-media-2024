@@ -4,7 +4,7 @@ let bugs = [];
 let squishedBugs = 0;
 let timer = 30;
 let gameOver = false;
-let gameStarted = false; // Flag to track if the game has started
+let gameStarted = false; 
 
 function preload() {
   // Load the bug sprite sheet
@@ -15,8 +15,8 @@ function setup() {
   createCanvas(1000, 600);
 
   // Calculate frame width and height from the sprite sheet
-  let frameWidth = bugSpriteSheet.width / 8; // Assuming 8 frames in the sprite sheet
-  let frameHeight = bugSpriteSheet.height; // Assuming single row of frames
+  let frameWidth = bugSpriteSheet.width / 8; // 8 frames in sprite sheet
+  let frameHeight = bugSpriteSheet.height; // single row of frames
   
   // Extract frames from the bug sprite sheet
   for (let i = 0; i < 8; i++) {
@@ -38,8 +38,6 @@ function setup() {
 }
 
 
-
-
 function draw() {
   background(220);
     // Check if the game has started
@@ -48,10 +46,11 @@ function draw() {
       textSize(30);
       fill(0);
       text("Click to Start", width / 2, height / 2);
-      return; // Exit draw function if game hasn't started
+      return; 
     }
 
     // Game logic
+    //If a bug moves off the screen, it removes that bug from the array and spawns a new one to replace it
     for (let i = bugs.length - 1; i >= 0; i--) {
       bugs[i].update();
       bugs[i].display();
@@ -74,25 +73,25 @@ function draw() {
       }
 
     // Game over condition
-  if (timer <= 0) {
-    gameOver = true;
-    // Display game over message with background
-    fill(255, 0, 0, 200); // Red with transparency
-    rect(0, 0, width, height); // Background rectangle
-    textSize(50);
-    textAlign(CENTER, CENTER);
-    fill(255);
-    text("Game Over", width / 2, height / 2);
-    text("Squished Bugs: " + squishedBugs, width / 2, height / 2 + 50); // Display squished bugs count
-    // Start over button
-    textSize(30);
-    fill(255);
-    rectMode(CENTER);
-    rect(width / 2, height / 2 + 150, 200, 50); // Button background
-    fill(0);
-    text("Start Over", width / 2, height / 2 + 150); // Button text
-    noLoop();
-  }
+    if (timer <= 0) {
+      gameOver = true;
+      // Display game over message
+      fill(255, 0, 0, 200); // Red with transparency
+      rect(0, 0, width, height); // Background rectangle
+      textSize(50);
+      textAlign(CENTER, CENTER);
+      fill(255);
+      text("Game Over", width / 2, height / 2);
+      text("Squished Bugs: " + squishedBugs, width / 2, height / 2 + 50); // Display squished bugs count
+      // Start over button
+      textSize(30);
+      fill(255);
+      rectMode(CENTER);
+      rect(width / 2, height / 2 + 150, 200, 50); 
+      fill(0);
+      text("Start Over", width / 2, height / 2 + 150);
+      noLoop();
+    }
 }
   
 
@@ -105,26 +104,25 @@ function draw() {
   
     // Check if a bug is clicked and squish it
     if (!gameOver) {
-      let bugClicked = false; // Flag to track if a bug is clicked
+      let bugClicked = false; 
       for (let i = bugs.length - 1; i >= 0; i--) {
         if (bugs[i].contains(mouseX, mouseY)) {
           bugs[i].squish();
           squishedBugs++;
-          // Increase speed of the squished bug
+          // Increase speed of the bugs
           bugs[i].increaseSpeed();
-          bugClicked = true; // Set flag to true if a bug is clicked
+          bugClicked = true; 
         }
       }
       // If no bug is clicked, add a new bug
       if (!bugClicked) {
         bugs.push(new Bug());
       }
-
     }
+    //if start button is clicked
     if (gameOver && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height / 2 + 125 && mouseY < height / 2 + 175) {
       resetGame();
     }
-
 
   }
   function resetGame() {
@@ -215,10 +213,13 @@ class Bug {
     this.isSquished = false;
   }
 
-  // Increase bug speed
-  increaseSpeed() {
-    // Increase speed by a small amount
-    this.speedX *= 1.1;
-    this.speedY *= 1.1;
-  }
+  // Increase bug speed for all bugs
+    increaseSpeed() {
+      // Increase speed for all bugs in the bugs array
+      for (let i = 0; i < bugs.length; i++) {
+          bugs[i].speedX *= 1.1;
+          bugs[i].speedY *= 1.1;
+      }
+    }
+
 }
