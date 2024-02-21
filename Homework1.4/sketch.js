@@ -1,107 +1,181 @@
+let bugSpriteSheet;
+let bugFrames = [];
 let bugs = [];
 let squishedBugs = 0;
 let timer = 30;
 let gameOver = false;
+let gameStarted = false; // Flag to track if the game has started
+
+function preload() {
+  // Load the bug sprite sheet
+  bugSpriteSheet = loadImage('bugspritesheet.png');
+}
 
 function setup() {
-  createCanvas(600, 400);
-  for (let i = 0; i < 5; i++) {
-    bugs.push(new Bug());
+  createCanvas(1000, 600);
+
+  // Calculate frame width and height from the sprite sheet
+  let frameWidth = bugSpriteSheet.width / 8; // Assuming 8 frames in the sprite sheet
+  let frameHeight = bugSpriteSheet.height; // Assuming single row of frames
+  
+  // Extract frames from the bug sprite sheet
+  for (let i = 0; i < 8; i++) {
+    let frame = bugSpriteSheet.get(i * frameWidth, 0, frameWidth, frameHeight);
+    bugFrames.push(frame);
   }
-  setInterval(() => {
-    if (!gameOver) timer--;
-  }, 1000);
+
+  // Click to start message
+  textAlign(CENTER, CENTER);
+  textSize(30);
+  fill(0);
+  text("Click to Start", width / 2, height / 2);
 }
 
 function draw() {
   background(220);
-  
-  for (let i = bugs.length - 1; i >= 0; i--) {
-    bugs[i].update();
-    bugs[i].display();
-    if (bugs[i].offScreen()) {
-      bugs.splice(i, 1);
-      bugs.push(new Bug());
+    // Check if the game has started
+    if (!gameStarted) {
+      textAlign(CENTER, CENTER);
+      textSize(30);
+      fill(0);
+      text("Click to Start", width / 2, height / 2);
+      return; // Exit draw function if game hasn't started
+    }
+
+    // Game logic
+    for (let i = bugs.length - 1; i >= 0; i--) {
+      bugs[i].update();
+      bugs[i].display();
+      if (bugs[i].offScreen()) {
+        bugs.splice(i, 1);
+        bugs.push(new Bug());
+      }
+    }
+
+    // Display squished bug count and timer
+    textSize(20);
+    textAlign(RIGHT, TOP);
+    fill(0);
+    text("Squished: " + squishedBugs, width - 10, 10);
+    text("Time: " + timer, width - 10, 40);
+
+    // Game over condition
+    if (timer <= 0) {
+      gameOver = true;
+      textSize(50);
+      textAlign(CENTER, CENTER);
+      fill(255, 0, 0);
+      text("Game Over", width / 2, height / 2);
+      text("Squished Bugs: " + squishedBugs, width / 2, height / 2 + 50); // Display squished bugs count
+      noLoop();
     }
   }
-  
-  textSize(20);
-  textAlign(RIGHT, TOP);
-  fill(0);
-  text("Squished: " + squishedBugs, width - 10, 10);
-  text("Time: " + timer, width - 10, 40);
-  
-  if (timer <= 0) {
-    gameOver = true;
-    textSize(50);
-    textAlign(CENTER, CENTER);
-    fill(255, 0, 0);
-    text("Game Over", width / 2, height / 2);
-    noLoop();
-  }
-}
+
 
 function mousePressed() {
+  // Start the game when clicked
+  if (!gameStarted) {
+    gameStarted = true;
+    return;
+  }
+
+  // Check if a bug is clicked and squish it
   if (!gameOver) {
+    let bugClicked = false; // Flag to track if a bug is clicked
     for (let i = bugs.length - 1; i >= 0; i--) {
       if (bugs[i].contains(mouseX, mouseY)) {
         bugs[i].squish();
         squishedBugs++;
+        // Increase bug speed with each squish
+        bugs[i].increaseSpeed();
+        bugClicked = true; // Set flag to true if a bug is clicked
       }
+    }
+    // If no bug is clicked, add a new bug
+    if (!bugClicked) {
+      bugs.push(new Bug());
     }
   }
 }
 
+
 class Bug {
   constructor() {
-    this.respawn();
-  }
-  
-  respawn() {
+    // Initialize bug properties
     this.x = random(width);
     this.y = random(height);
-    this.diameter = random(20, 40);
+    this.size = random(40, 80); 
     this.speedX = random(-3, 3);
     this.speedY = random(-3, 3);
-    this.color = color(random(255), random(255), random(255));
-    this.dead = false;
+    this.angle = 0; // Angle for rotation
+    this.isSquished = false;
   }
-  
+
+  // Update bug position and animation
   update() {
-    if (!this.dead) {
+    if (!this.isSquished) {
       this.x += this.speedX;
       this.y += this.speedY;
+      // Bounce off walls
       if (this.x < 0 || this.x > width) this.speedX *= -1;
       if (this.y < 0 || this.y > height) this.speedY *= -1;
+      // Calculate angle based on velocity
+      this.angle = atan2(this.speedY, this.speedX);
     }
   }
-  
+
+  // Display bug
   display() {
-    if (!this.dead) {
-      fill(this.color);
-      ellipse(this.x, this.y, this.diameter);
+    push(); // Save the current drawing state
+    translate(this.x, this.y); // Move the origin to the bug's position
+    rotate(this.angle + HALF_PI); // Rotate bug to face the direction it's moving
+
+    if (!this.isSquished) {
+      // Display walking animation if bug is not squished
+      let walkingFrameIndex = floor(frameCount / 5) % 7; // Animate frames every 5 frames
+      image(bugFrames[walkingFrameIndex], -this.size / 2, -this.size / 2, this.size, this.size);
     } else {
-      fill(100);
-      ellipse(this.x, this.y, this.diameter);
-      fill(255, 0, 0);
-      ellipse(this.x, this.y, this.diameter * 0.7); // Display dead bug
+      // Display squished bug image if bug is squished
+      image(bugFrames[7], -this.size / 2, -this.size / 2, this.size, this.size);
     }
+
+    pop(); // Restore the previous drawing state
   }
-  
+
+  // Check if bug is off-screen
   offScreen() {
     return (this.x < 0 || this.x > width || this.y < 0 || this.y > height);
   }
-  
+
+  // Check if bug contains given point
   contains(x, y) {
-    if (this.dead) return false;
     let d = dist(x, y, this.x, this.y);
-    return (d < this.diameter / 2);
+    return (d < this.size / 2);
   }
-  
+
+  // Squish the bug
   squish() {
-    this.dead = true;
+    this.isSquished = true;
+    // Respawn bug after 1 second
     setTimeout(() => {
       this.respawn();
-    }, 1000); // Respawn after 1 second
+    }, 1000);
+  }
+
+  // Respawn the bug
+  respawn() {
+    this.x = random(width);
+    this.y = random(height);
+    this.speedX = random(-3, 3);
+    this.speedY = random(-3, 3);
+    this.angle = 0; // Reset angle
+    this.isSquished = false;
+  }
+
+  // Increase bug speed
+  increaseSpeed() {
+    // Increase speed by a small amount
+    this.speedX *= 1.1;
+    this.speedY *= 1.1;
   }
 }
