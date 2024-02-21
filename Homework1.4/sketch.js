@@ -24,12 +24,21 @@ function setup() {
     bugFrames.push(frame);
   }
 
+  // Start with multiple bugs on the screen
+  for (let i = 0; i < 5; i++) {
+    bugs.push(new Bug());
+  }
+
   // Click to start message
   textAlign(CENTER, CENTER);
   textSize(30);
   fill(0);
   text("Click to Start", width / 2, height / 2);
+
 }
+
+
+
 
 function draw() {
   background(220);
@@ -59,44 +68,78 @@ function draw() {
     text("Squished: " + squishedBugs, width - 10, 10);
     text("Time: " + timer, width - 10, 40);
 
-    // Game over condition
-    if (timer <= 0) {
-      gameOver = true;
-      textSize(50);
-      textAlign(CENTER, CENTER);
-      fill(255, 0, 0);
-      text("Game Over", width / 2, height / 2);
-      text("Squished Bugs: " + squishedBugs, width / 2, height / 2 + 50); // Display squished bugs count
-      noLoop();
-    }
-  }
-
-
-function mousePressed() {
-  // Start the game when clicked
-  if (!gameStarted) {
-    gameStarted = true;
-    return;
-  }
-
-  // Check if a bug is clicked and squish it
-  if (!gameOver) {
-    let bugClicked = false; // Flag to track if a bug is clicked
-    for (let i = bugs.length - 1; i >= 0; i--) {
-      if (bugs[i].contains(mouseX, mouseY)) {
-        bugs[i].squish();
-        squishedBugs++;
-        // Increase bug speed with each squish
-        bugs[i].increaseSpeed();
-        bugClicked = true; // Set flag to true if a bug is clicked
+    // Update the timer
+    if (frameCount % 60 === 0 && timer > 0) { // Update timer once per second
+        timer--;
       }
-    }
-    // If no bug is clicked, add a new bug
-    if (!bugClicked) {
-      bugs.push(new Bug());
-    }
+
+    // Game over condition
+  if (timer <= 0) {
+    gameOver = true;
+    // Display game over message with background
+    fill(255, 0, 0, 200); // Red with transparency
+    rect(0, 0, width, height); // Background rectangle
+    textSize(50);
+    textAlign(CENTER, CENTER);
+    fill(255);
+    text("Game Over", width / 2, height / 2);
+    text("Squished Bugs: " + squishedBugs, width / 2, height / 2 + 50); // Display squished bugs count
+    // Start over button
+    textSize(30);
+    fill(255);
+    rectMode(CENTER);
+    rect(width / 2, height / 2 + 150, 200, 50); // Button background
+    fill(0);
+    text("Start Over", width / 2, height / 2 + 150); // Button text
+    noLoop();
   }
 }
+  
+
+  function mousePressed() {
+    // Start the game when clicked
+    if (!gameStarted) {
+      gameStarted = true;
+      return;
+    }
+  
+    // Check if a bug is clicked and squish it
+    if (!gameOver) {
+      let bugClicked = false; // Flag to track if a bug is clicked
+      for (let i = bugs.length - 1; i >= 0; i--) {
+        if (bugs[i].contains(mouseX, mouseY)) {
+          bugs[i].squish();
+          squishedBugs++;
+          // Increase speed of the squished bug
+          bugs[i].increaseSpeed();
+          bugClicked = true; // Set flag to true if a bug is clicked
+        }
+      }
+      // If no bug is clicked, add a new bug
+      if (!bugClicked) {
+        bugs.push(new Bug());
+      }
+
+    }
+    if (gameOver && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height / 2 + 125 && mouseY < height / 2 + 175) {
+      resetGame();
+    }
+
+
+  }
+  function resetGame() {
+    // Reset game variables
+    squishedBugs = 0;
+    timer = 30;
+    gameOver = false;
+    gameStarted = false;
+    bugs = [];
+    // Start with multiple bugs on the screen
+    for (let i = 0; i < 5; i++) {
+      bugs.push(new Bug());
+    }
+    loop(); // Restart the draw loop
+  }
 
 
 class Bug {
