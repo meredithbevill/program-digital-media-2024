@@ -1,46 +1,41 @@
-let sampler, distortion;
+let sampler, reverb;
 
-function preload() {
-    // Load audio files
-    soundFormats('mp3', 'ogg');
-    sampler = [
-        loadSound('assets/popcorn.mp3'),
-        loadSound('assets/water.mp3'),
-        //loadSound('path/to/sample3.mp3'),
-        //loadSound('path/to/sample4.mp3')
-    ];
-}
+    function preload() {
+    //initialize sampler with audio files and maps it to the notes for Tone.Sampler
+      sampler = new Tone.Sampler({
+        "C4": "assets/alarm.mp3",
+        "D4": "assets/arcaderetro.mp3",
+        "E4": "assets/popcorn.mp3",
+        "F4": "assets/water.mp3",
+      }).toDestination(); //connect sampler to audio
 
-function setup() {
-    createCanvas(400, 400);
+      //initialize the reverb effect 
+      reverb = new Tone.Reverb({
+        decay: 5, //how long it takes for reverb to fade out
+        wet: 0.5 //initial amount of effect mixed with the dry signal
+      }).toDestination(); //connect reverb to audio
+      
+      //connect sampler to reverb 
+      sampler.connect(reverb);
 
-    // Create buttons to trigger each sample
-    for (let i = 0; i < sampler.length; i++) {
-        createButton('Sample ' + (i + 1)).position(10, 40 * i + 10).mousePressed(() => {
-            sampler[i].play();
-        });
+      //once all samples are loaded, log a message to the console
+      Tone.loaded().then(() => {
+        console.log('Samples loaded');
+      });
     }
 
-    // Create a distortion effect
-    distortion = new Tone.Distortion(0.8);
-
-    // Connect the sampler to the distortion effect
-    for (let i = 0; i < sampler.length; i++) {
-        sampler[i].disconnect();
-        sampler[i].connect(distortion);
+    function setup() {
+      createCanvas(400, 400);
     }
 
-    // Connect the distortion effect to the output
-    distortion.toDestination();
-}
+    //function to play a sample based on the note passed
+    function playSample(note) {
+    //array of notes cooresponding to the array
+      const notes = ['C4', 'D4', 'E4', 'F4'];
+      //trigger sound
+      sampler.triggerAttackRelease(notes[note]); //knows what sound to play based off the note it is assigned to
+    }
 
-function draw() {
-    background(220);
-    
-}
-
-// Control the effect using the mouse position
-function mouseMoved() {
-    let amount = map(mouseX, 0, width, 0, 1);
-    distortion.distortion = amount;
-}
+    function changeReverbMix(value) {
+      reverb.wet.value = value;
+    }
