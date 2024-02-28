@@ -1,4 +1,4 @@
-let sampler, reverb;
+let sampler, pitchShift;
 
     function preload() {
     //initialize sampler with audio files and maps it to the notes for Tone.Sampler
@@ -10,22 +10,18 @@ let sampler, reverb;
       }).toDestination(); //connect sampler to audio
 
       pitchShift = new Tone.PitchShift().toDestination();
-      
+      //connect sampler to the pitch shift
       sampler.connect(pitchShift);
 
-      //once all samples are loaded, log a message to the console
-      Tone.loaded().then(() => {
-        console.log('Samples loaded');
-      });
     }
 
     function setup() {
       createCanvas(400, 400);
     }
 
-    //function to play a sample based on the note passed
+    //plays a sample based on the note passed
     function playSample(note) {
-    //array of notes cooresponding to the array
+    //array of notes cooresponding to sounds
       const notes = ['C4', 'D4', 'E4', 'F4'];
       //trigger sound
       sampler.triggerAttackRelease(notes[note]); //knows what sound to play based off the note it is assigned to
