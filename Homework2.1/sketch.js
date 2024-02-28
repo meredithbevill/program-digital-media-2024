@@ -9,14 +9,9 @@ let sampler, reverb;
         "F4": "assets/water.mp3",
       }).toDestination(); //connect sampler to audio
 
-      //initialize the reverb effect 
-      reverb = new Tone.Reverb({
-        decay: 5, //how long it takes for reverb to fade out
-        wet: 0.5 //initial amount of effect mixed with the dry signal
-      }).toDestination(); //connect reverb to audio
+      pitchShift = new Tone.PitchShift().toDestination();
       
-      //connect sampler to reverb 
-      sampler.connect(reverb);
+      sampler.connect(pitchShift);
 
       //once all samples are loaded, log a message to the console
       Tone.loaded().then(() => {
@@ -36,6 +31,11 @@ let sampler, reverb;
       sampler.triggerAttackRelease(notes[note]); //knows what sound to play based off the note it is assigned to
     }
 
-    function changeReverbMix(value) {
-      reverb.wet.value = value;
+    function changePitch(value) {
+      // Convert slider value to semitones
+      const pitchSemitones = parseInt(value);
+      // Convert semitones to frequency ratio
+      const pitchRatio = Tone.intervalToFrequencyRatio(pitchSemitones);
+      // Set the pitch shift effect to the calculated ratio
+      pitchShift.pitch = pitchRatio;
     }

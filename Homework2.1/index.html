@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simple Sampler with Effects</title>
+  <title>Simple Sampler with Pitch Control</title>
+  <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.37/Tone.js"></script>
 </head>
 <body>
+  <div class="container">
   <h2>Simple Sampler with Effects</h2>
   
   <button onclick="playSample(0)">Alarm</button>
@@ -15,8 +17,9 @@
   <button onclick="playSample(2)">Popcorn</button>
   <button onclick="playSample(3)">Water</button>
   <br><br>
-  Reverb: <input type="range" min="0" max="1" step="0.01" value="0.5" onchange="changeReverbMix(this.value)">
+  Pitch Control: <input type="range" id="pitchSlider" min="-100" max="100" value="0" step="1" onchange="changePitch(this.value)">
   <br><br>
+  </div>
   <script src="sketch.js"></script>
 </body>
 </html>
