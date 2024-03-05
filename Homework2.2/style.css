@@ -38,8 +38,7 @@ p {
   margin: 0 5px;
   background-color: #dddddd;
   border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  x
 }
 
 .key.pressed {
