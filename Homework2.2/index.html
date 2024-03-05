@@ -1,23 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Synthesizer</title>
-
-    <link rel="stylesheet" type="text/css" href="style.css">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.37/Tone.js"></script>
-  </head>
-
-  <body>
-    <div id="synth-controls">
-      <label for="filter-frequency">Filter Frequency:</label>
-      <input type="range" id="filter-frequency" min="20" max="20000" value="1000">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Synthesizer</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.37/Tone.js"></script>
+</head>
+<body>
+  <div id="synth-controls">
+    <h1>Synthesizer</h1>
+    <p>Press keys 'Z ... ,' on your keyboard to play the following notes:</p>
+    <div class="keyboard">
+      <div class="key" data-note="C4" data-key="z">C4</div>
+      <div class="key" data-note="D4" data-key="x">D4</div>
+      <div class="key" data-note="E4" data-key="c">E4</div>
+      <div class="key" data-note="F4" data-key="v">F4</div>
+      <div class="key" data-note="G4" data-key="b">G4</div>
+      <div class="key" data-note="A4" data-key="n">A4</div>
+      <div class="key" data-note="B4" data-key="m">B4</div>
+      <div class="key" data-note="C5" data-key=",">C5</div>
+    </div>
+    <div class="controls">
+      <div class="control">
+        <span class="control-label">Filter Frequency:</span>
+        <input type="range" id="filter-frequency" min="20" max="100000" value="1000">
+        <p class="control-info">Controls the cutoff frequency of the filter. Higher values result in brighter sounds.</p>
+      </div>
+      <div class="control">
+        <span class="control-label">Filter Q:</span>
+        <input type="range" id="filter-q" min="0.1" max="30" step="0.1" value="10">
+        <p class="control-info">Controls the quality factor of the filter. Higher values result in more pronounced effects.</p>
+      </div>
+    </div>
   </div>
-  
-    <script src="sketch.js"></script>
-  </body>
+
+  <script src="sketch.js"></script>
+</body>
 </html>
