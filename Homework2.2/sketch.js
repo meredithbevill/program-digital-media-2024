@@ -16,7 +16,7 @@ const keyboardMap = {
     ',': 'C5',
 };
 
-// Key press event listener
+// Key press event listener --> Also adding a pressed feature so it showcases if a key is being pressed *FOR UI PURPOSES*
 document.addEventListener('keydown', e => {
   const key = e.key.toLowerCase();
   if (keyboardMap[key]) {
