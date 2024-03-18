@@ -1,25 +1,34 @@
-let canvas; //canvas element
-let ctx; //context for drawing on canvas
-let jumpImage; 
-let audioContext; //for sound synthesis 
+// Declare variables
+let canvas; // Canvas element
+let ctx; // Context for drawing on canvas
+let jumpImage; // Image object for jump image
+let audioContext; // Audio context for sound synthesis
 
+// Preload function: Load assets before setup()
 function preload() {
   jumpImage = loadImage('jump.avif');
 }
 
+// Setup function: Initialize canvas and audio context
 function setup() {
+  // Create a canvas with width 800 and height 600
   canvas = createCanvas(800, 600);
-  canvas.parent('canvas-container'); 
+  // Set the parent of the canvas to a container with ID 'canvas-container' (if exists)
+  canvas.parent('canvas-container');
+  // Get the drawing context of the canvas
   ctx = canvas.drawingContext;
+  // Create an audio context for sound synthesis
   audioContext = new (window.AudioContext || window.webkitAudioContext)();
 }
 
+// Draw function: Empty, not drawing anything, just using the jump picture
 function draw() {
-  // draw function empty 
+  // This function remains empty
 }
 
-
+// Function to play the jump sound
 function playJumpSound() {
+  // Create oscillator, noise, filter, and gain nodes for sound synthesis
   let osc = audioContext.createOscillator();
   let noise = audioContext.createBufferSource();
   let filter = audioContext.createBiquadFilter();
@@ -56,17 +65,24 @@ function playJumpSound() {
   // Start sound
   osc.start();
   noise.start();
+
+  // Stop after 300 milliseconds
   setTimeout(() => {
     osc.stop();
     noise.stop();
   }, 300);
 }
 
+// Function called when the mouse is clicked
 function mouseClicked() {
+  // Clear canvas
   clear();
+  // Draw the picture 
   image(jumpImage, 0, 0, width, height);
+  // Play the sound
   playJumpSound();
+  // Clear the picture after 500 milliseconds
   setTimeout(() => {
     clear();
-  }, 500); // time to control how long the image stays visible
+  }, 500);
 }
