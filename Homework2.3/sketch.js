@@ -11,19 +11,13 @@ function preload() {
 
 // Setup function: Initialize canvas and audio context
 function setup() {
-  // Create a canvas with width 800 and height 600
   canvas = createCanvas(800, 600);
-  // Set the parent of the canvas to a container with ID 'canvas-container' (if exists)
+  // Set the parent of the canvas to a container with ID 'canvas-container'
   canvas.parent('canvas-container');
   // Get the drawing context of the canvas
   ctx = canvas.drawingContext;
   // Create an audio context for sound synthesis
   audioContext = new (window.AudioContext || window.webkitAudioContext)();
-}
-
-// Draw function: Empty, not drawing anything, just using the jump picture
-function draw() {
-  // This function remains empty
 }
 
 // Function to play the jump sound
