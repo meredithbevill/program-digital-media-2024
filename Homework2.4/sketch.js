@@ -22,6 +22,7 @@ function preload() {
       release: 0.3
     }
   }).toDestination();
+
 }
 
 function setup() {
@@ -106,6 +107,7 @@ function checkGameOver() {
 }
 
 function displayGameOver() {
+  
   fill(255, 0, 0, 200);
   rect(0, 0, width, height);
   textSize(50);
@@ -115,6 +117,7 @@ function displayGameOver() {
   text("Squished Bugs: " + squishedBugs, width / 2, height / 2 + 50);
   displayStartOverButton();
 }
+
 
 function displayStartOverButton() {
   textSize(30);
@@ -229,3 +232,4 @@ class Bug {
     this.isSquished = false;
   }
 }
+
