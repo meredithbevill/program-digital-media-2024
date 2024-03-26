@@ -6,52 +6,31 @@ let timer = 30;
 let gameOver = false;
 let gameStarted = false;
 
-// Sound variables
-let squishSound;
-let gameOverSound;
-let backgroundMusic;
-
-// Tone.js variables
-let synth;
-let musicLoop;
+// Define Tone.js synthesizers or players
+let squishSynth;
+let missSynth;
 
 function preload() {
   // Load the bug sprite sheet
   bugSpriteSheet = loadImage('assets/bugspritesheet.png');
-
-  // Load sound files
-  squishSound = loadSound('assets/bugsquish.mp3');
-  gameOverSound = loadSound('assets/gameover.mp3');
-  backgroundMusic = loadSound('assets/backgroundmusic.mp3');
 }
 
 function setup() {
   createCanvas(1000, 600);
 
-  // Start background music
-  backgroundMusic.loop();
-
-  // Create a synth with Tone.js
-  synth = new Tone.Synth().toDestination();
-
-  // Define musical theme
-  musicLoop = new Tone.Loop((time) => {
-    // You can compose your musical theme here
-    // For example, play different notes or chords
-    synth.triggerAttackRelease("C4", "8n", time);
-  }, "4n").start(0);
-
-  // Start the Tone.js Transport
-  Tone.Transport.start();
-
   // Calculate frame width and height from the sprite sheet
   let frameWidth = bugSpriteSheet.width / 8; // 8 frames in sprite sheet
   let frameHeight = bugSpriteSheet.height; // single row of frames
-
+  
   // Extract frames from the bug sprite sheet
   for (let i = 0; i < 8; i++) {
     let frame = bugSpriteSheet.get(i * frameWidth, 0, frameWidth, frameHeight);
     bugFrames.push(frame);
+  }
+
+  // Start with multiple bugs on the screen
+  for (let i = 0; i < 5; i++) {
+    bugs.push(new Bug());
   }
 
   // Click to start message
@@ -59,66 +38,82 @@ function setup() {
   textSize(30);
   fill(0);
   text("Click to Start", width / 2, height / 2);
+
+  // Create a simple sine wave synthesizer for missed bug sound
+  squishSynth = new Tone.Player('assets/bugsquish.mp3').toDestination(); // Sound for squished bug
+  missSynth = new Tone.Synth({
+    oscillator: {
+      type: 'sine' // Use a sine wave oscillator
+    },
+    envelope: {
+      attack: 0.1, // Attack time
+      decay: 0.2, // Decay time
+      sustain: 0.5, // Sustain level
+      release: 0.3 // Release time
+    }
+  }).toDestination();
+
+    
 }
+
 
 function draw() {
   background(220);
 
-  // Check if the game has started
-  if (!gameStarted) {
-    textAlign(CENTER, CENTER);
-    textSize(30);
-    fill(0);
-    text("Click to Start", width / 2, height / 2);
-    return;
-  }
-
-  // Game logic
-  //If a bug moves off the screen, it removes that bug from the array and spawns a new one to replace it
-  for (let i = bugs.length - 1; i >= 0; i--) {
-    bugs[i].update();
-    bugs[i].display();
-    if (bugs[i].offScreen()) {
-      bugs.splice(i, 1);
-      bugs.push(new Bug());
+    // Check if the game has started
+    if (!gameStarted) {
+      textAlign(CENTER, CENTER);
+      textSize(30);
+      fill(0);
+      text("Click to Start", width / 2, height / 2);
+      return; 
     }
-  }
 
-  // Display squished bug count and timer
-  textSize(20);
-  textAlign(RIGHT, TOP);
-  fill(0);
-  text("Squished: " + squishedBugs, width - 10, 10);
-  text("Time: " + timer, width - 10, 40);
+    // Game logic
+    //If a bug moves off the screen, it removes that bug from the array and spawns a new one to replace it
+    for (let i = bugs.length - 1; i >= 0; i--) {
+      bugs[i].update();
+      bugs[i].display();
+      if (bugs[i].offScreen()) {
+        bugs.splice(i, 1);
+        bugs.push(new Bug());
+      }
+    }
 
-  // Update the timer
-  if (frameCount % 60 === 0 && timer > 0) { // Update timer once per second
-    timer--;
-  }
-
-  // Game over condition
-  if (timer <= 0) {
-    gameOver = true;
-    // Play game over sound
-    gameOverSound.play();
-    // Display game over message
-    fill(255, 0, 0, 200); // Red with transparency
-    rect(0, 0, width, height); // Background rectangle
-    textSize(50);
-    textAlign(CENTER, CENTER);
-    fill(255);
-    text("Game Over", width / 2, height / 2);
-    text("Squished Bugs: " + squishedBugs, width / 2, height / 2 + 50); // Display squished bugs count
-    // Start over button
-    textSize(30);
-    fill(255);
-    rectMode(CENTER);
-    rect(width / 2, height / 2 + 150, 200, 50);
+    // Display squished bug count and timer
+    textSize(20);
+    textAlign(RIGHT, TOP);
     fill(0);
-    text("Start Over", width / 2, height / 2 + 150);
-    noLoop();
-  }
+    text("Squished: " + squishedBugs, width - 10, 10);
+    text("Time: " + timer, width - 10, 40);
+
+    // Update the timer
+    if (frameCount % 60 === 0 && timer > 0) { // Update timer once per second
+        timer--;
+      }
+      
+    // Game over condition
+    if (timer == 0) {
+      gameOver = true;
+      // Display game over message
+      fill(255, 0, 0, 200); // Red with transparency
+      rect(0, 0, width, height); // Background rectangle
+      textSize(50);
+      textAlign(CENTER, CENTER);
+      fill(255);
+      text("Game Over", width / 2, height / 2);
+      text("Squished Bugs: " + squishedBugs, width / 2, height / 2 + 50); // Display squished bugs count
+      // Start over button
+      textSize(30);
+      fill(255);
+      rectMode(CENTER);
+      rect(width / 2, height / 2 + 150, 200, 50); 
+      fill(0);
+      text("Start Over", width / 2, height / 2 + 150);
+      noLoop();
+    }
 }
+  
 
 function mousePressed() {
   // Start the game when clicked
@@ -135,44 +130,44 @@ function mousePressed() {
         bugs[i].squish();
         squishedBugs++;
         // Play squish sound
-        squishSound.play();
-        // Increase speed of the bugs
-        bugs[i].increaseSpeed();
+        squishSynth.start();
         bugClicked = true;
       }
     }
-    // If no bug is clicked, add a new bug
+    // If no bug is clicked, add a new bug and play missed sound
     if (!bugClicked) {
       bugs.push(new Bug());
+      // Play missed sound
+      missSynth.triggerAttackRelease('C4', '8n'); // Play a note
     }
   }
-  //if start button is clicked
-  if (gameOver && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height / 2 + 125 && mouseY < height / 2 + 175) {
-    resetGame();
+    //if start button is clicked
+    if (gameOver && mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height / 2 + 125 && mouseY < height / 2 + 175) {
+      resetGame();
+    }
+
+  }
+  function resetGame() {
+    // Reset game variables
+    squishedBugs = 0;
+    timer = 30;
+    gameOver = false;
+    gameStarted = false;
+    bugs = [];
+    // Start with multiple bugs on the screen
+    for (let i = 0; i < 5; i++) {
+      bugs.push(new Bug());
+    }
+    loop(); // Restart the draw loop
   }
 
-}
-
-function resetGame() {
-  // Reset game variables
-  squishedBugs = 0;
-  timer = 30;
-  gameOver = false;
-  gameStarted = false;
-  bugs = [];
-  // Start with multiple bugs on the screen
-  for (let i = 0; i < 5; i++) {
-    bugs.push(new Bug());
-  }
-  loop(); // Restart the draw loop
-}
 
 class Bug {
   constructor() {
     // Initialize bug properties
     this.x = random(width);
     this.y = random(height);
-    this.size = random(40, 80);
+    this.size = random(40, 80); 
     this.speedX = random(-3, 3);
     this.speedY = random(-3, 3);
     this.angle = 0; // Angle for rotation
@@ -241,12 +236,12 @@ class Bug {
   }
 
   // Increase bug speed for all bugs
-  increaseSpeed() {
-    // Increase speed for all bugs in the bugs array
-    for (let i = 0; i < bugs.length; i++) {
-      bugs[i].speedX *= 1.1;
-      bugs[i].speedY *= 1.1;
+    increaseSpeed() {
+      // Increase speed for all bugs in the bugs array
+      for (let i = 0; i < bugs.length; i++) {
+          bugs[i].speedX *= 1.1;
+          bugs[i].speedY *= 1.1;
+      }
     }
-  }
-}
 
+}
