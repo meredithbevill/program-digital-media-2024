@@ -24,8 +24,8 @@ let lastAnimalTime = 0; // Variable to store the time when the animal was displa
 
 function preload() {
   // Load images
-  cowImage = loadImage('images/cow.webp');
-  dogImage = loadImage('images/dog.webp');
+  cowImage = loadImage('images/cow.png');
+  dogImage = loadImage('images/dog.png');
 
   // Create Tone.js synthesizers for sounds
   cowSound = new Tone.Player({
