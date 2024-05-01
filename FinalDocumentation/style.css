@@ -42,3 +42,8 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
+.animal-image {
+    max-width: 200px; /* Set maximum width */
+    height: auto; /* Maintain aspect ratio */
+}
