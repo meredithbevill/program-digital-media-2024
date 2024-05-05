@@ -80,14 +80,14 @@ function draw() {
       } else {
         fill(255, 0, 0);
       }
-      rect(0, 0, width, 50);
+      rect(0, height - 50, width, 50);
       fill(0);
       textSize(20);
       textAlign(CENTER);
       if (feedback === 'correct') {
-        text("Correct! +1 point", width / 2, 30);
+        text("Correct! +1 point", width / 2, height - 20);
       } else {
-        text("Wrong! -1 point", width / 2, 30);
+        text("Wrong! -1 point", width / 2, height - 20);
       }
     } else {
       feedback = null;
