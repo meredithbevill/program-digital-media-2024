@@ -74,6 +74,7 @@ function draw() {
   }
 }
 
+
 function connectBtnClick() {
   if (!port.opened()) {
     port.open('Arduino', 9600);
