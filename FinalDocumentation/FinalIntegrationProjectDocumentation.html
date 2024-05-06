@@ -31,15 +31,27 @@
 <section id="components">
     <h2>Components</h2>
     <h3>Graphics</h3>
-    <ul>
-        <li>Cow Image: <img class="animal-image" src="images/cow.png" alt="Cow Image"></li>
-        <li>Dog Image: <img class="animal-image" src="images/dog.png" alt="Dog Image"></li>
-    </ul>
+    <div class="animal-images">
+        <div class="animal-image-container">
+            <div class="image-label">Cow Image:</div>
+            <img class="animal-image" src="images/cow.png" alt="Cow Image">
+        </div>
+        <div class="animal-image-container">
+            <div class="image-label">Dog Image:</div>
+            <img class="animal-image" src="images/dog.png" alt="Dog Image">
+        </div>
+    </div>
     <h3>Sound</h3>
-    <ul>
-        <li>Cow Sound: <audio controls><source src="sounds/cow_sound.mp3" type="audio/mp3">Your browser does not support the audio element.</audio></li>
-        <li>Dog Sound: <audio controls><source src="sounds/dog_sound.mp3" type="audio/mp3">Your browser does not support the audio element.</audio></li>
-    </ul>
+    <div class="animal-sounds">
+        <div class="animal-sound-container">
+            <div class="sound-label">Cow Sound:</div>
+            <audio controls><source src="sounds/cowMoo.wav" type="audio/wav">Your browser does not support the audio element.</audio>
+        </div>
+        <div class="animal-sound-container">
+            <div class="sound-label">Dog Sound:</div>
+            <audio controls><source src="sounds/dogBark.wav" type="audio/wav">Your browser does not support the audio element.</audio>
+        </div>
+    </div>
     <h3>Hardware Input</h3>
     <ul>
         <li>Arduino Setup: Two buttons are linked to Arduino pins. The Arduino code is programmed to detect button presses and communicate with the p5.js code. When a button is pressed, it triggers the corresponding cow or dog sound to play.</li>
@@ -49,23 +61,28 @@
     <ul>
         <li>Green LED Output: The green LED will flash if the player hits the correct button at the correct time.</li>
         <li>Red LED Output: The red LED will flash if the player hits the incorrect button.</li>
-        <li><img src="images/LED.png" alt="LEDs Picture"</li>
+        <li><img src="images/LED.png" alt="LEDs"></li>
     </ul>
 </section>
+
 
 <section id="future-development">
     <h2>Future Development</h2>
-    <p>For future development, additional features could be implemented to enhance gameplay experience. Some potential ideas include:</p>
+    <p>There are several exciting possibilities for enhancing the Animal Sound Match game:</p>
     <ul>
-        <li>Increasing difficulty levels with faster image flashing.</li>
-        <li>Adding more animal options for matching.</li>
-        <li>Implementing a multiplayer mode for competitive play.</li>
+        <li><strong>Background Music:</strong> Integrate background music to enhance the atmosphere and engagement of the game.</li>
+        <li><strong>Level-based Gameplay:</strong> Implement a level system where the game progressively becomes more challenging as players advance. This could include faster image flashing, shorter response times, and additional animal sounds to match.</li>
+        <li><strong>Additional Animals and Buttons:</strong> Expand the variety of animals featured in the game and introduce more buttons for players to interact with.</li>
+        <li><strong>Multiplayer Mode:</strong> Develop a multiplayer mode to allow players to compete against each other in real-time, adding a competitive element to the game.</li>
+        <li><strong>Scoreboard and Achievements:</strong> Implement a scoreboard to track players' scores and achievements, providing motivation for replayability and competition among players.</li>
+        <li><strong>Customization Options:</strong> Allow players to customize their gaming experience by choosing different themes, sound effects, and button configurations.</li>
     </ul>
 </section>
 
+
 <section id="example-video">
-    <h2>Example Video</h2>
-    <p><a href="https://youtu.be/GHdpkf2x7uo" target="_blank">Watch Example Video</a></p>
+    <h2>Video Example of Working Game</h2>
+    <p><a href="https://youtu.be/GHdpkf2x7uo" target="_blank">Click Here to Watch on Youtube</a></p>
 </section>
 
 </body>
