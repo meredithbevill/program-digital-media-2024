@@ -19,10 +19,8 @@ let score = 0;
 let currentAnimal = null; // Variable to store the currently displayed animal
 let flashInterval = 3000; // Flash interval in milliseconds 
 let lastFlashTime = 0; // Variable to store the time of the last flash
-let animalDisplayDuration = 2000; // Duration to display the animal in milliseconds 
 let lastAnimalTime = 0; // Variable to store the time when the animal was displayed
-let minFlashInterval = 1000; // Minimum flash interval in milliseconds
-
+let pauseDuration = 2000;
 
 function preload() {
   // Load images
@@ -70,11 +68,14 @@ function draw() {
   
   // Display different scenes based on game state
   if (gameState === 'welcome') {
+    connectBtn.show();
     displayWelcome();
   } else if (gameState === 'gameplay') {
+    connectBtn.hide();
     displayGameplay();
     serialEvent();
   } else if (gameState === 'gameover') {
+    connectBtn.hide();
     displayGameOver();
   }
 }
@@ -100,17 +101,22 @@ function displayWelcome() {
 function displayGameplay() {
 
   // Reduce flash interval gradually over time
-  if (flashInterval > minFlashInterval) {
-    flashInterval -= 10; // Decrease flash interval by 10 milliseconds
+  if (flashInterval > 500) {
+    flashInterval -= 100; // Decrease flash interval gradually
   }
 
-
   // Check if it's time to display a new animal
-  if (millis() - lastFlashTime > flashInterval) {
+  if (millis() - lastFlashTime > flashInterval + pauseDuration) {
+    pauseDuration-=50;
     lastFlashTime = millis();
     currentAnimal = random(['cow', 'dog']); // Randomly select cow or dog
     lastAnimalTime = millis(); // Store the time when the animal was displayed
     console.log("Current animal:", currentAnimal); // Log current animal
+  }
+
+  // Check if it's time to hide the animal
+  if (millis() - lastAnimalTime > pauseDuration && millis() - lastAnimalTime <= flashInterval + pauseDuration) {
+    currentAnimal = null;
   }
 
   // Display the current animal
@@ -147,15 +153,6 @@ function displayGameOver() {
   text('Your score: ' + score, width / 2, height / 2);
 }
 
-function flashImages() {
-  // Flash cow image
-  fill(255);
-  rect(cowX, cowY, cowWidth, cowHeight);
-
-  // Flash dog image
-  fill(255);
-  rect(dogX, dogY, dogWidth, dogHeight);
-}
 
 function playCowSound() {
   cowSound.start();
