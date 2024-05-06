@@ -1,8 +1,8 @@
 // Variables for graphics
 let cowImage, dogImage;
 let cowX, cowY, dogX, dogY;
-let cowWidth = 100, cowHeight = 100; 
-let dogWidth = 100, dogHeight = 100; 
+let cowWidth = 200, cowHeight = 200; 
+let dogWidth = 200, dogHeight = 200; 
 let gameState = 'welcome'; // Initial state
 
 // Variables for sound
@@ -14,13 +14,15 @@ let cowButtonState = 0;
 let dogButtonState = 0;
 
 // Game variables
-let timer = 20; // Game time in seconds
+let timer = 30; 
 let score = 0;
 let currentAnimal = null; // Variable to store the currently displayed animal
 let flashInterval = 3000; // Flash interval in milliseconds 
 let lastFlashTime = 0; // Variable to store the time of the last flash
 let animalDisplayDuration = 2000; // Duration to display the animal in milliseconds 
 let lastAnimalTime = 0; // Variable to store the time when the animal was displayed
+let minFlashInterval = 1000; // Minimum flash interval in milliseconds
+
 
 function preload() {
   // Load images
@@ -45,7 +47,7 @@ function setup() {
    // Initialize image positions
    cowX = width / 4;
    cowY = height / 2;
-   dogX = width * 3 / 4;
+   dogX = width * 2 / 4;
    dogY = height / 2;
  
   // Arduino serial communication
@@ -96,6 +98,13 @@ function displayWelcome() {
 }
 
 function displayGameplay() {
+
+  // Reduce flash interval gradually over time
+  if (flashInterval > minFlashInterval) {
+    flashInterval -= 10; // Decrease flash interval by 10 milliseconds
+  }
+
+
   // Check if it's time to display a new animal
   if (millis() - lastFlashTime > flashInterval) {
     lastFlashTime = millis();
@@ -119,9 +128,8 @@ function displayGameplay() {
   text('Score: ' + score, width - 20, 40);
   
   // Update timer
-  if (millis() - lastAnimalTime > animalDisplayDuration) {
+  if (frameCount % 60 === 0 && timer > 0) {
     timer--;
-    lastAnimalTime = millis(); // Reset last animal time
   }
   
   // Check if it's time to switch to the game over state
@@ -160,8 +168,8 @@ function playDogSound() {
 // Handle button presses from Arduino
 function serialEvent() {
   let data = port.readUntil('\n');
-  console.log(data);
   if (data !== null) {
+    console.log(data);
     data = data.trim();
     if (data === "CowButtonPressed") {
       cowButtonState = 1; // Update cow button state
@@ -180,12 +188,12 @@ function checkAnswerCow() {
   console.log('Cow:' + cowButtonState);
   console.log('Dog:' + dogButtonState);
   console.log(currentAnimal);
-    if(currentAnimal = 'cow') {
-      score++;
-      port.write('Correct\n');
+    if(currentAnimal === 'dog') {
+      score--;
+      port.write('Wrong\n');
     }else{
-    score--;
-    port.write('Wrong\n');
+    score++;
+    port.write('Correct\n');
   }
   cowButtonState = 0;
 }
@@ -194,7 +202,7 @@ function checkAnswerDog(){
   console.log('Cow' + cowButtonState);
   console.log('Dog' + dogButtonState); 
   console.log(currentAnimal);
-  if (currentAnimal = 'dog'){
+  if (currentAnimal === 'dog'){
     score++;
     port.write('Correct\n');
   }else{
