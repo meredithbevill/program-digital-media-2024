@@ -50,11 +50,13 @@ function setup() {
  
   // Arduino serial communication
   port = createSerial();
+  console.log(port);
 
   let usedPorts = usedSerialPorts();
   if (usedPorts.length > 0) {
     port.open(usedPorts[0], 9600);
   }
+  console.log(usedPorts);
 
   connectBtn = createButton('Connect to Arduino');
   connectBtn.position(325, 100);
@@ -69,6 +71,7 @@ function draw() {
     displayWelcome();
   } else if (gameState === 'gameplay') {
     displayGameplay();
+    serialEvent();
   } else if (gameState === 'gameover') {
     displayGameOver();
   }
@@ -156,45 +159,49 @@ function playDogSound() {
 
 // Handle button presses from Arduino
 function serialEvent() {
-  console.log("Serial event received");
-  let data = port.readStringUntil('\n');
+  let data = port.readUntil('\n');
+  console.log(data);
   if (data !== null) {
     data = data.trim();
-    console.log("Received data:", data); // Log received data
     if (data === "CowButtonPressed") {
       cowButtonState = 1; // Update cow button state
-      checkAnswer('cow'); // Check the answer
+      playCowSound();
+      checkAnswerCow(); // Check the answer
     } else if (data === "DogButtonPressed") {
       dogButtonState = 1; // Update dog button state
-      checkAnswer('dog'); // Check the answer
+      playDogSound();
+      checkAnswerDog(); // Check the answer
     }
   }
 }
 
-// Handle button releases from Arduino
-function serialButtonReleased(data) {
-  console.log("Serial button released:", data);
-  data = data.trim();
-  console.log("Button released:", data); // Log button release event
-  if (data === "CowButtonReleased") {
-    cowButtonState = 0; // Reset cow button state
-  } else if (data === "DogButtonReleased") {
-    dogButtonState = 0; // Reset dog button state
-  }
-}
 
-
-function checkAnswer(animal) {
-  // Check if correct animal button pressed
-  if ((animal === 'cow' && cowButtonState === 1) || (animal === 'dog' && dogButtonState === 1)) {
-    score++;
-    // Send command to Arduino for correct answer
-    port.write('Correct\n');
-  } else {
+function checkAnswerCow() {
+  console.log('Cow:' + cowButtonState);
+  console.log('Dog:' + dogButtonState);
+  console.log(currentAnimal);
+    if(currentAnimal = 'cow') {
+      score++;
+      port.write('Correct\n');
+    }else{
     score--;
-    // Send command to Arduino for wrong answer
     port.write('Wrong\n');
   }
+  cowButtonState = 0;
+}
+
+function checkAnswerDog(){
+  console.log('Cow' + cowButtonState);
+  console.log('Dog' + dogButtonState); 
+  console.log(currentAnimal);
+  if (currentAnimal = 'dog'){
+    score++;
+    port.write('Correct\n');
+  }else{
+    score--;
+    port.write('Wrong\n');
+  }
+  dogButtonState = 0;
 }
 
 
@@ -203,3 +210,4 @@ function keyPressed() {
     gameState = 'gameplay';
   }
 }
+

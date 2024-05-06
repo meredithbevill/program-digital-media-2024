@@ -30,6 +30,7 @@ void loop() {
   if (Serial.available() > 0) {
     String message = Serial.readStringUntil('\n');
     message.trim(); // Remove leading/trailing whitespaces
+    Serial.println(message);
 
     // Check if the received message is "Correct" or "Wrong" and trigger the corresponding LED
     if (message.equals("Correct")) {
